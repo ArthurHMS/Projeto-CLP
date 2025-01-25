@@ -1,10 +1,10 @@
 <?php
 
 require_once 'MenuEntidade.php';
-require_once '../data/DAOProduto.php';
-require_once '../models/Produto.php';
+require_once 'DAOProduto.php';
+require_once 'Produto.php';
 
-class MenuProdutoController extends MenuEntidade {
+class MenuProduto extends MenuEntidade {
     private $dao;
 
     public function __construct() {

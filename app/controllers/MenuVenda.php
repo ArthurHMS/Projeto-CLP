@@ -1,12 +1,12 @@
 <?php
 
 require_once 'MenuEntidade.php';
-require_once '../data/DAOVenda.php';
-require_once '../data/DAOProduto.php';
-require_once '../models/Venda.php';
-require_once '../models/Produto.php';
+require_once 'DAOVenda.php';
+require_once 'DAOProduto.php';
+require_once 'Venda.php';
+require_once 'Produto.php';
 
-class MenuVendaController extends MenuEntidade {
+class MenuVenda extends MenuEntidade {
     private $daoVenda;
     private $daoProduto;
 
