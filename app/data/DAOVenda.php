@@ -1,7 +1,7 @@
 <?php
 
-require_once 'DAO.php';
-require_once 'Venda.php';
+require_once '../app/data/DAO.php';
+require_once '../app/models/Venda.php';
 require_once '../config/database.php';
 
 class DAOVenda {

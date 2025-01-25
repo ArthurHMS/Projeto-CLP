@@ -1,9 +1,9 @@
 <?php
 
-require_once 'Entidade.php';
-require_once 'Totalizavel.php';
-require_once 'Produto.php';
-require_once 'ItemVenda.php';
+require_once '../app/models/Entidade.php';
+require_once '../app/models/Totalizavel.php';
+require_once '../app/models/Produto.php';
+require_once '../app/models/ItemVenda.php';
 
 class Venda extends Entidade implements Totalizavel {
     private $dataHora;

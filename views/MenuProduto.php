@@ -1,8 +1,8 @@
 <?php
 
-require_once 'MenuEntidade.php';
-require_once 'DAOProduto.php';
-require_once 'Produto.php';
+require_once '../views/MenuEntidade.php';
+require_once '../app/data/DAOProduto.php';
+require_once '../app/models/Produto.php';
 
 class MenuProduto extends MenuEntidade {
     private $dao;

@@ -1,6 +1,6 @@
 <?php
 
-require_once 'MenuAbstrato.php';
+require_once '../views/MenuAbstrato.php';
 
 abstract class MenuEntidade extends MenuAbstrato {
 

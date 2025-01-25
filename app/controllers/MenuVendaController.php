@@ -1,10 +1,10 @@
 <?php
 
-require_once 'MenuEntidade.php';
-require_once '../data/DAOVenda.php';
-require_once '../data/DAOProduto.php';
-require_once '../models/Venda.php';
-require_once '../models/Produto.php';
+require_once '../views/MenuEntidade.php';
+require_once '../app/data/DAOVenda.php';
+require_once '../app/data/DAOProduto.php';
+require_once '../app/models/Venda.php';
+require_once '../app/models/Produto.php';
 
 class MenuVendaController extends MenuEntidade {
     private $daoVenda;

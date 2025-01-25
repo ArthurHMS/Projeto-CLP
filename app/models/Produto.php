@@ -1,7 +1,7 @@
 <?php
 
-require_once 'Entidade.php';
-require_once 'Totalizavel.php';
+require_once '../app/models/Entidade.php';
+require_once '../app/models/Totalizavel.php';
 
 class Produto extends Entidade implements Totalizavel {
     private $nome;

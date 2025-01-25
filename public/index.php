@@ -1,6 +1,6 @@
 <?php
 
-require_once '../app/controllers/MenuPrincipal.php';
+require_once '../views/MenuPrincipal.php';
 
 $scanner = fopen('php://stdin', 'r');
 
