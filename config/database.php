@@ -4,10 +4,10 @@ class Database {
     private static $instance = null;
     private $connection;
 
-    private $host = 'localhost';
+    private $host = 'db';
     private $dbname = 'Loja';
-    private $username = 'your_username';
-    private $password = 'your_password';
+    private $username = 'arthur'; // Nome de usuário configurado no docker-compose.yml
+    private $password = '1234'; // Senha configurada no docker-compose.yml
 
     private function __construct() {
         try {

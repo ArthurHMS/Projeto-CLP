@@ -1,0 +1,18 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Containers: Docker Compose",
+            "type": "shell",
+            "command": "docker-compose",
+            "args": [
+                "-f",
+                "docker-compose.yml",
+                "up",
+                "-d",
+                "--build"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
