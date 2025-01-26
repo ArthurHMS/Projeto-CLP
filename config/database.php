@@ -5,7 +5,7 @@ class Database {
     private $connection;
 
     private $host = 'localhost';
-    private $dbname = 'your_database_name';
+    private $dbname = 'Loja';
     private $username = 'your_username';
     private $password = 'your_password';
 

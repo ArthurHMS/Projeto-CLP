@@ -1,6 +1,6 @@
 <?php
 
-require_once '../views/MenuAbstrato.php';
+require_once 'MenuAbstrato.php';
 require_once '../app/controllers/MenuProdutoController.php';
 require_once '../app/controllers/MenuVendaController.php';
 

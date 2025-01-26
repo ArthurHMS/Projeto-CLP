@@ -1,6 +1,6 @@
 <?php
 
-require_once '../views/MenuEntidade.php';
+require_once 'MenuEntidade.php';
 require_once '../app/data/DAOVenda.php';
 require_once '../app/data/DAOProduto.php';
 require_once '../app/models/Venda.php';
