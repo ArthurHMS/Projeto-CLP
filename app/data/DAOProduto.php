@@ -1,7 +1,7 @@
 <?php
 
 require_once 'DAO.php';
-require_once '../models/Produto.php';
+require_once __DIR__ . '/../models/Produto.php';
 
 class DAOProduto {
     private static $instance;

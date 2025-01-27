@@ -1,8 +1,8 @@
 <?php
 
 require_once 'DAO.php';
-require_once '../models/Venda.php';
-require_once '../../config/database.php';
+require_once __DIR__ . '/../models/Venda.php';
+require_once __DIR__ . '/../models/Produto.php';
 
 class DAOVenda {
     private static $instance;

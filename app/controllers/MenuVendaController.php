@@ -1,17 +1,16 @@
 <?php
 
-require_once '../../views/MenuEntidade.php';
-require_once '../data/DAOVenda.php';
-require_once '../data/DAOProduto.php';
-require_once '../models/Venda.php';
-require_once '../models/Produto.php';
+require_once __DIR__ . '/../../views/MenuEntidade.php';
+require_once __DIR__ . '/../data/DAOVenda.php';
+require_once __DIR__ . '/../data/DAOProduto.php';
+require_once __DIR__ . '/../models/Venda.php';
+require_once __DIR__ . '/../models/Produto.php';
 
 class MenuVendaController extends MenuEntidade {
     private $daoVenda;
     private $daoProduto;
 
     public function __construct() {
-        parent::__construct();
         $this->daoVenda = DAOVenda::getInstance();
         $this->daoProduto = DAOProduto::getInstance();
     }

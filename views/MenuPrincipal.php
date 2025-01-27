@@ -9,7 +9,6 @@ class MenuPrincipal extends MenuAbstrato {
     private $menuVenda;
 
     public function __construct() {
-        parent::__construct();
         $this->menuProduto = new MenuProdutoController();
         $this->menuVenda = new MenuVendaController();
     }

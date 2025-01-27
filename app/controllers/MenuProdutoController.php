@@ -1,14 +1,12 @@
 <?php
-
-require_once '../../views/MenuEntidade.php';
-require_once '../data/DAOProduto.php';
-require_once '../models/Produto.php';
+require_once __DIR__ . '/../../views/MenuEntidade.php';
+require_once __DIR__ . '/../data/DAOProduto.php';
+require_once __DIR__ . '/../models/Produto.php';
 
 class MenuProdutoController extends MenuEntidade {
     private $dao;
 
     public function __construct() {
-        parent::__construct();
         $this->dao = DAOProduto::getInstance();
     }
 
