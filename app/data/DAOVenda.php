@@ -6,10 +6,10 @@ require_once '../../config/database.php';
 
 class DAOVenda {
     private static $instance;
-    private $connection;
+    private $filePath;
 
     private function __construct() {
-        $this->connection = Database::getInstance()->getConnection();
+        $this->filePath = __DIR__ . '/vendas.json';
     }
 
     public static function getInstance() {
@@ -19,48 +19,74 @@ class DAOVenda {
         return self::$instance;
     }
 
+    private function salvarDados($dados) {
+        file_put_contents($this->filePath, json_encode($dados));
+    }
+
+    private function carregarDados() {
+        if (!file_exists($this->filePath)) {
+            return [];
+        }
+        $json = file_get_contents($this->filePath);
+        return json_decode($json, true);
+    }
+
     public function adicionar($venda) {
-        $sql = "INSERT INTO vendas (data_hora) VALUES (:data_hora)";
-        $stmt = $this->connection->prepare($sql);
-        $dataHora = $venda->getDataHora()->format('Y-m-d H:i:s');
-        $stmt->bindParam(':data_hora', $dataHora);
-        $stmt->execute();
-        $vendaId = $this->connection->lastInsertId();
+        $dados = $this->carregarDados();
+        $vendaData = [
+            'id' => $venda->getId(),
+            'dataHora' => $venda->getDataHora()->format('Y-m-d H:i:s'),
+            'itens' => []
+        ];
 
         foreach ($venda->getItens() as $item) {
-            $sql = "INSERT INTO itens_venda (venda_id, produto_id, qtd, valor) VALUES (:venda_id, :produto_id, :qtd, :valor)";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bindParam(':venda_id', $vendaId);
-            $stmt->bindParam(':produto_id', $item->getProduto()->getId());
-            $stmt->bindParam(':qtd', $item->getQtd());
-            $stmt->bindParam(':valor', $item->getValor());
-            $stmt->execute();
+            $vendaData['itens'][] = [
+                'produto_id' => $item->getProduto()->getId(),
+                'nome' => $item->getProduto()->getNome(),
+                'qtd' => $item->getQtd(),
+                'valor' => $item->getValor()
+            ];
         }
+
+        $dados[] = $vendaData;
+        $this->salvarDados($dados);
     }
 
     public function buscar($id) {
-        $sql = "SELECT * FROM vendas WHERE id = :id";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, 'Venda');
-        return $stmt->fetch();
+        $dados = $this->carregarDados();
+        foreach ($dados as $vendaData) {
+            if ($vendaData['id'] == $id) {
+                $venda = new Venda();
+                $venda->setId($vendaData['id']);
+                $venda->setDataHora(DateTime::createFromFormat('Y-m-d H:i:s', $vendaData['dataHora']));
+                foreach ($vendaData['itens'] as $itemData) {
+                    $produto = new Produto($itemData['nome'], $itemData['valor']);
+                    $produto->setId($itemData['produto_id']);
+                    $venda->adicionarItem($produto, $itemData['qtd']);
+                }
+                return $venda;
+            }
+        }
+        return null;
     }
 
     public function remover($id) {
-        $sql = "DELETE FROM vendas WHERE id = :id";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
+        $dados = $this->carregarDados();
+        $dados = array_filter($dados, function($vendaData) use ($id) {
+            return $vendaData['id'] != $id;
+        });
+        $this->salvarDados($dados);
     }
 
     public function __toString() {
-        $sql = "SELECT * FROM vendas";
-        $stmt = $this->connection->query($sql);
-        $vendas = $stmt->fetchAll(PDO::FETCH_CLASS, 'Venda');
+        $dados = $this->carregarDados();
         $result = "";
-        foreach ($vendas as $venda) {
-            $result .= $venda->__toString() . "\n";
+        foreach ($dados as $vendaData) {
+            $result .= sprintf("Id: %d\tData-Hora: %s\n", $vendaData['id'], $vendaData['dataHora']);
+            foreach ($vendaData['itens'] as $itemData) {
+                $result .= sprintf("  Produto: %s\tQtd: %d\tValor: %.2f\n", $itemData['nome'], $itemData['qtd'], $itemData['valor']);
+            }
+            $result .= "\n";
         }
         return $result;
     }

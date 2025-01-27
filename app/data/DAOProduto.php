@@ -6,9 +6,10 @@ require_once '../../config/database.php';
 
 class DAOProduto {
     private static $instance;
+    private $filePath;
 
     private function __construct() {
-        $this->connection = Database::getInstance()->getConnection();
+        $this->filePath = __DIR__ . '/produtos.json';
     }
 
     public static function getInstance() {
@@ -18,53 +19,69 @@ class DAOProduto {
         return self::$instance;
     }
 
+    private function salvarDados($dados) {
+        file_put_contents($this->filePath, json_encode($dados));
+    }
+
+    private function carregarDados() {
+        if (!file_exists($this->filePath)) {
+            return [];
+        }
+        $json = file_get_contents($this->filePath);
+        return json_decode($json, true);
+    }
+
     public function adicionar($produto) {
-        $sql = "INSERT INTO produtos (nome, valor) VALUES (:nome, :valor)";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':nome', $produto->getNome());
-        $stmt->bindParam(':valor', $produto->getValor());
-        $stmt->execute();
+        $dados = $this->carregarDados();
+        $dados[] = [
+            'id' => $produto->getId(),
+            'nome' => $produto->getNome(),
+            'valor' => $produto->getValor()
+        ];
+        $this->salvarDados($dados);
     }
 
     public function buscar($id) {
-        $sql = "SELECT * FROM produtos WHERE id = :id";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, 'Produto');
-        return $stmt->fetch();
+        $dados = $this->carregarDados();
+        foreach ($dados as $produto) {
+            if ($produto['id'] == $id) {
+                return new Produto($produto['nome'], $produto['valor']);
+            }
+        }
+        return null;
     }
 
     public function buscarPorNome($nome) {
-        $sql = "SELECT * FROM produtos WHERE nome = :nome";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':nome', $nome);
-        $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, 'Produto');
-        return $stmt->fetch();
+        $dados = $this->carregarDados();
+        foreach ($dados as $produto) {
+            if ($produto['nome'] == $nome) {
+                return new Produto($produto['nome'], $produto['valor']);
+            }
+        }
+        return null;
     }
 
     public function remover($id) {
-        $sql = "DELETE FROM produtos WHERE id = :id";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
+        $dados = $this->carregarDados();
+        $dados = array_filter($dados, function($produto) use ($id) {
+            return $produto['id'] != $id;
+        });
+        $this->salvarDados($dados);
     }
 
     public function removerPorNome($nome) {
-        $sql = "DELETE FROM produtos WHERE nome = :nome";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bindParam(':nome', $nome);
-        $stmt->execute();
+        $dados = $this->carregarDados();
+        $dados = array_filter($dados, function($produto) use ($nome) {
+            return $produto['nome'] != $nome;
+        });
+        $this->salvarDados($dados);
     }
 
     public function __toString() {
-        $sql = "SELECT * FROM produtos";
-        $stmt = $this->connection->query($sql);
-        $produtos = $stmt->fetchAll(PDO::FETCH_CLASS, 'Produto');
+        $dados = $this->carregarDados();
         $result = "";
-        foreach ($produtos as $produto) {
-            $result .= $produto->__toString() . "\n";
+        foreach ($dados as $produto) {
+            $result .= sprintf("Id: %d\tNome: %s\tValor: %.2f\n", $produto['id'], $produto['nome'], $produto['valor']);
         }
         return $result;
     }
