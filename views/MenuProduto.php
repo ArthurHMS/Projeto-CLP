@@ -8,62 +8,73 @@ class MenuProduto extends MenuEntidade {
     private $dao;
 
     public function __construct() {
-        parent::__construct();
         $this->dao = DAOProduto::getInstance();
     }
 
+    public function processarOpcao($opcao) {
+        $this->executarOpcao($opcao);
+    }
+
     protected function mostrarTitulo() {
-        echo "MENU PRODUTOS\n";
+        echo "<h1>MENU PRODUTOS</h1>";
     }
 
     protected function listar() {
-        echo $this->dao->__toString();
+        echo nl2br($this->dao->__toString());
     }
 
     protected function adicionar($scanner) {
-        $nome = null;
-        $valor = 0.0;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $nome = isset($_POST['nome']) ? trim($_POST['nome']) : null;
+            $valor = isset($_POST['valor']) ? floatval($_POST['valor']) : null;
 
-        while (true) {
-            try {
-                echo "\nDigite o nome: ";
-                $nome = trim(fgets($scanner));
-
-                echo "Digite o valor: ";
-                $valor = floatval(trim(fgets($scanner)));
-
-                if ($nome == null || $nome === "" || $valor <= 0.0) {
-                    throw new Exception("\nFavor informar os dados corretamente.\n");
-                } else {
-                    break;
-                }
-            } catch (Exception $ex) {
-                echo $ex->getMessage();
+            if ($nome == null || $nome === "" || $valor === null || $valor <= 0.0) {
+                echo "<p>Favor informar os dados corretamente.</p>";
+            } else {
+                $this->dao->adicionar(new Produto($nome, $valor));
+                echo "<p>Produto adicionado com sucesso!</p>";
             }
+        } else {
+            echo "<form method='POST'>";
+            echo "<input type='hidden' name='menu' value='produto'>";
+            echo "<label for='nome'>Nome: </label>";
+            echo "<input type='text' name='nome' id='nome'><br>";
+            echo "<label for='valor'>Valor: </label>";
+            echo "<input type='number' step='0.01' name='valor' id='valor'><br>";
+            echo "<button type='submit'>Adicionar</button>";
+            echo "</form>";
         }
-
-        $this->dao->adicionar(new Produto($nome, $valor));
     }
 
     protected function remover($scanner) {
-        $nome = null;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $nome = isset($_POST['nome']) ? trim($_POST['nome']) : null;
 
-        while (true) {
-            try {
-                echo "\nDigite o nome: ";
-                $nome = trim(fgets($scanner));
-
-                if ($nome == null || $nome === "") {
-                    throw new Exception("\nFavor informar o nome corretamente.\n");
-                } else {
-                    break;
-                }
-            } catch (Exception $ex) {
-                echo $ex->getMessage();
+            if ($nome == null || $nome === "") {
+                echo "<p>Favor informar o nome corretamente.</p>";
+            } else {
+                $this->dao->removerPorNome($nome);
+                echo "<p>Produto removido com sucesso!</p>";
             }
+        } else {
+            echo "<form method='POST'>";
+            echo "<input type='hidden' name='menu' value='produto'>";
+            echo "<label for='nome'>Nome: </label>";
+            echo "<input type='text' name='nome' id='nome'><br>";
+            echo "<button type='submit'>Remover</button>";
+            echo "</form>";
         }
+    }
 
-        $this->dao->removerPorNome($nome);
+    protected function mostrarOpcoes() {
+        echo "0 -> VOLTAR<br>";
+        echo "1 -> LISTAR PRODUTOS<br>";
+        echo "2 -> ADICIONAR PRODUTO<br>";
+        echo "3 -> REMOVER PRODUTO<br>";
+    }
+
+    protected function getMenuName() {
+        return 'produto';
     }
 }
 

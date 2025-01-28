@@ -10,7 +10,7 @@ abstract class MenuEntidade extends MenuAbstrato {
 
     protected abstract function remover($scanner);
 
-    protected function executarOpcao($opcao, $scanner) {
+    protected function executarOpcao($opcao) {
         switch ($opcao) {
             case 0:
                 return 0;
@@ -20,11 +20,11 @@ abstract class MenuEntidade extends MenuAbstrato {
                 break;
 
             case 2:
-                $this->adicionar($scanner);
+                $this->adicionar(null);
                 break;
 
             case 3:
-                $this->remover($scanner);
+                $this->remover(null);
                 break;
 
             default:
@@ -35,10 +35,10 @@ abstract class MenuEntidade extends MenuAbstrato {
     }
 
     protected function mostrarOpcoes() {
-        echo "0 -> VOLTAR\n";
-        echo "1 -> LISTAR\n";
-        echo "2 -> ADICIONAR\n";
-        echo "3 -> REMOVER\n";
+        echo "0 -> VOLTAR<br>";
+        echo "1 -> LISTAR<br>";
+        echo "2 -> ADICIONAR<br>";
+        echo "3 -> REMOVER<br>";
     }
 }
 

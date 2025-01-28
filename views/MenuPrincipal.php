@@ -13,34 +13,41 @@ class MenuPrincipal extends MenuAbstrato {
         $this->menuVenda = new MenuVendaController();
     }
 
-    protected function executarOpcao($opcao, $scanner) {
+    public function processarOpcao($opcao) {
+        $this->executarOpcao($opcao);
+    }
+
+    protected function executarOpcao($opcao) {
         switch ($opcao) {
             case 0:
-                return 0;
+                echo "Programa encerrado.";
+                break;
 
             case 1:
-                $this->menuProduto->mostrarMenu($scanner);
+                $this->menuProduto->mostrarMenu();
                 break;
 
             case 2:
-                $this->menuVenda->mostrarMenu($scanner);
+                $this->menuVenda->mostrarMenu();
                 break;
 
             default:
                 echo "OPCAO INVALIDA\n";
         }
-
-        return 1;
     }
 
     protected function mostrarOpcoes() {
-        echo "0 -> FECHAR PROGRAMA\n";
-        echo "1 -> PRODUTO\n";
-        echo "2 -> VENDA\n";
+        echo "0 -> FECHAR PROGRAMA<br>";
+        echo "1 -> PRODUTO<br>";
+        echo "2 -> VENDA<br>";
     }
 
     protected function mostrarTitulo() {
-        echo "MENU PRINCIPAL\n";
+        echo "<h1>MENU PRINCIPAL</h1>";
+    }
+
+    protected function getMenuName() {
+        return 'principal';
     }
 }
 

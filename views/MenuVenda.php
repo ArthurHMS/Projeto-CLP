@@ -11,74 +11,77 @@ class MenuVenda extends MenuEntidade {
     private $daoProduto;
 
     public function __construct() {
-        parent::__construct();
         $this->daoVenda = DAOVenda::getInstance();
         $this->daoProduto = DAOProduto::getInstance();
     }
 
+    public function processarOpcao($opcao) {
+        $this->executarOpcao($opcao);
+    }
+
     protected function mostrarTitulo() {
-        echo "MENU VENDAS\n";
+        echo "<h1>MENU VENDAS</h1>";
     }
 
     protected function listar() {
-        echo $this->daoVenda->__toString();
+        echo nl2br($this->daoVenda->__toString());
     }
 
     protected function adicionar($scanner) {
-        $venda = new Venda();
-        $produto = null;
-        $qtd = 0;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $produtoNome = isset($_POST['produtoNome']) ? trim($_POST['produtoNome']) : null;
+            $qtd = isset($_POST['qtd']) ? intval($_POST['qtd']) : null;
+            $produto = $this->daoProduto->buscarPorNome($produtoNome);
 
-        while (true) {
-            while (true) {
-                try {
-                    echo "\nDigite o nome do produto: ";
-                    $produtoNome = trim(fgets($scanner));
-                    $produto = $this->daoProduto->buscarPorNome($produtoNome);
-
-                    echo "Digite a quantidade: ";
-                    $qtd = intval(trim(fgets($scanner)));
-
-                    if ($produto == null || $qtd <= 0) {
-                        throw new Exception("\nFavor informar os dados corretamente.\n");
-                    } else {
-                        break;
-                    }
-                } catch (Exception $ex) {
-                    echo $ex->getMessage();
-                }
+            if ($produto == null || $qtd === null || $qtd <= 0) {
+                echo "<p>Favor informar os dados corretamente.</p>";
+            } else {
+                $venda = new Venda();
+                $venda->adicionarItem($produto, $qtd);
+                $this->daoVenda->adicionar($venda);
+                echo "<p>Venda adicionada com sucesso!</p>";
             }
-
-            $venda->adicionarItem($produto, $qtd);
-
-            echo "\nDeseja adicionar outro produto à venda (1-SIM/0-NAO)? ";
-            if (intval(trim(fgets($scanner))) != 1) {
-                break;
-            }
+        } else {
+            echo "<form method='POST'>";
+            echo "<input type='hidden' name='menu' value='venda'>";
+            echo "<label for='produtoNome'>Nome do Produto: </label>";
+            echo "<input type='text' name='produtoNome' id='produtoNome'><br>";
+            echo "<label for='qtd'>Quantidade: </label>";
+            echo "<input type='number' name='qtd' id='qtd'><br>";
+            echo "<button type='submit'>Adicionar</button>";
+            echo "</form>";
         }
-
-        echo "\n\nNOTA FISCAL\n" . $venda->__toString();
-        $this->daoVenda->adicionar($venda);
     }
 
     protected function remover($scanner) {
-        $id = 0;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = isset($_POST['id']) ? intval($_POST['id']) : null;
 
-        while (true) {
-            try {
-                echo "\nDigite o id: ";
-                $id = intval(trim(fgets($scanner)));
-
-                if ($id <= 0) {
-                    throw new Exception("\nFavor informar os dados corretamente.\n");
-                } else {
-                    break;
-                }
-            } catch (Exception $ex) {
-                echo $ex->getMessage();
+            if ($id === null || $id <= 0) {
+                echo "<p>Favor informar os dados corretamente.</p>";
+            } else {
+                $this->daoVenda->remover($id);
+                echo "<p>Venda removida com sucesso!</p>";
             }
+        } else {
+            echo "<form method='POST'>";
+            echo "<input type='hidden' name='menu' value='venda'>";
+            echo "<label for='id'>ID: </label>";
+            echo "<input type='number' name='id' id='id'><br>";
+            echo "<button type='submit'>Remover</button>";
+            echo "</form>";
         }
-        $this->daoVenda->remover($id);
+    }
+
+    protected function mostrarOpcoes() {
+        echo "0 -> VOLTAR<br>";
+        echo "1 -> LISTAR VENDAS<br>";
+        echo "2 -> ADICIONAR VENDA<br>";
+        echo "3 -> REMOVER VENDA<br>";
+    }
+
+    protected function getMenuName() {
+        return 'venda';
     }
 }
 

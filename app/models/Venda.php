@@ -6,6 +6,7 @@ require_once 'Produto.php';
 require_once 'ItemVenda.php';
 
 class Venda extends Entidade implements Totalizavel {
+    protected $id;
     private $dataHora;
     private $itens;
 
@@ -15,8 +16,20 @@ class Venda extends Entidade implements Totalizavel {
         $this->itens = [];
     }
 
+    public function getId() {
+        return $this->id;
+    }
+
+    public function setId($id) {
+        $this->id = $id;
+    }
+
     public function getDataHora() {
         return $this->dataHora;
+    }
+
+    public function setDataHora($dataHora) {
+        $this->dataHora = $dataHora;
     }
 
     public function getItens() {

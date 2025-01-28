@@ -9,6 +9,9 @@ class DAOProduto {
 
     private function __construct() {
         $this->filePath = __DIR__ . '/produtos.json';
+        if (!file_exists($this->filePath)) {
+            file_put_contents($this->filePath, json_encode([]));
+        }
     }
 
     public static function getInstance() {
@@ -23,9 +26,6 @@ class DAOProduto {
     }
 
     private function carregarDados() {
-        if (!file_exists($this->filePath)) {
-            return [];
-        }
         $json = file_get_contents($this->filePath);
         return json_decode($json, true);
     }

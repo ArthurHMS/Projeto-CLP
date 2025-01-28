@@ -4,6 +4,7 @@ require_once 'Entidade.php';
 require_once 'Totalizavel.php';
 
 class Produto extends Entidade implements Totalizavel {
+    protected $id;
     private $nome;
     private $valor;
 
@@ -11,6 +12,14 @@ class Produto extends Entidade implements Totalizavel {
         parent::__construct();
         $this->nome = $nome;
         $this->valor = $valor;
+    }
+
+    public function getId() {
+        return $this->id;
+    }
+
+    public function setId($id) {
+        $this->id = $id;
     }
 
     public function getNome() {
