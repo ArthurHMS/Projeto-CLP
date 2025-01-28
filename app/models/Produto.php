@@ -1,9 +1,8 @@
 <?php
 
 require_once 'Entidade.php';
-require_once 'Totalizavel.php';
 
-class Produto extends Entidade implements Totalizavel {
+class Produto extends Entidade {
     protected $id;
     private $nome;
     private $valor;

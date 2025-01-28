@@ -1,12 +1,11 @@
 <?php
 
-require_once __DIR__ . '/../../views/MenuEntidade.php';
 require_once __DIR__ . '/../data/DAOVenda.php';
 require_once __DIR__ . '/../data/DAOProduto.php';
 require_once __DIR__ . '/../models/Venda.php';
 require_once __DIR__ . '/../models/Produto.php';
 
-class MenuVendaController extends MenuEntidade {
+class MenuVendaController {
     private $daoVenda;
     private $daoProduto;
 
@@ -15,15 +14,19 @@ class MenuVendaController extends MenuEntidade {
         $this->daoProduto = DAOProduto::getInstance();
     }
 
-    protected function mostrarTitulo() {
+    public function processarOpcao($opcao) {
+        $this->executarOpcao($opcao);
+    }
+
+    public function mostrarTitulo() {
         echo "MENU VENDAS\n";
     }
 
-    protected function listar() {
+    public function listar() {
         echo $this->daoVenda->__toString();
     }
 
-    protected function adicionar($scanner) {
+    public function adicionar($scanner) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $produtoNome = isset($_POST['produtoNome']) ? trim($_POST['produtoNome']) : null;
             $qtd = isset($_POST['qtd']) ? intval($_POST['qtd']) : null;
@@ -41,15 +44,15 @@ class MenuVendaController extends MenuEntidade {
             echo "<form method='POST'>";
             echo "<input type='hidden' name='menu' value='venda'>";
             echo "<label for='produtoNome'>Nome do Produto: </label>";
-            echo "<input type='text' name='produtoNome' id='produtoNome'><br>";
+            echo "<input type='text' name='produtoNome' id='produtoNome' required><br>";
             echo "<label for='qtd'>Quantidade: </label>";
-            echo "<input type='number' name='qtd' id='qtd'><br>";
+            echo "<input type='number' name='qtd' id='qtd' required><br>";
             echo "<button type='submit'>Adicionar</button>";
             echo "</form>";
         }
     }
 
-    protected function remover($scanner) {
+    public function remover($scanner) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = isset($_POST['id']) ? intval($_POST['id']) : null;
 
@@ -63,13 +66,55 @@ class MenuVendaController extends MenuEntidade {
             echo "<form method='POST'>";
             echo "<input type='hidden' name='menu' value='venda'>";
             echo "<label for='id'>ID: </label>";
-            echo "<input type='number' name='id' id='id'><br>";
+            echo "<input type='number' name='id' id='id' required><br>";
             echo "<button type='submit'>Remover</button>";
             echo "</form>";
         }
     }
 
-    protected function getMenuName() {
+    public function mostrarMenu() {
+        echo "<form method='POST'>";
+        $this->mostrarTitulo();
+        $this->mostrarOpcoes();
+        echo "<input type='hidden' name='menu' value='" . $this->getMenuName() . "'>";
+        echo "<label for='opcao'>INFORME A SUA OPCAO: </label>";
+        echo "<input type='number' name='opcao' id='opcao'>";
+        echo "<button type='submit'>Enviar</button>";
+        echo "</form>";
+    }
+
+    public function mostrarOpcoes() {
+        echo "0 -> VOLTAR<br>";
+        echo "1 -> LISTAR<br>";
+        echo "2 -> ADICIONAR<br>";
+        echo "3 -> REMOVER<br>";
+    }
+
+    private function executarOpcao($opcao) {
+        switch ($opcao) {
+            case 0:
+                return 0;
+
+            case 1:
+                $this->listar();
+                break;
+
+            case 2:
+                $this->adicionar(null);
+                break;
+
+            case 3:
+                $this->remover(null);
+                break;
+
+            default:
+                echo "OPCAO INVALIDA\n";
+        }
+
+        return 1;
+    }
+
+    public function getMenuName() {
         return 'venda';
     }
 }
