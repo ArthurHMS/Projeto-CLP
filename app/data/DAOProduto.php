@@ -22,7 +22,7 @@ class DAOProduto {
     }
 
     private function salvarDados($dados) {
-        file_put_contents($this->filePath, json_encode($dados));
+        file_put_contents($this->filePath, json_encode($dados, JSON_PRETTY_PRINT));
     }
 
     private function carregarDados() {
@@ -33,21 +33,10 @@ class DAOProduto {
     public function adicionar($produto) {
         $dados = $this->carregarDados();
         $dados[] = [
-            'id' => $produto->getId(),
             'nome' => $produto->getNome(),
             'valor' => $produto->getValor()
         ];
         $this->salvarDados($dados);
-    }
-
-    public function buscar($id) {
-        $dados = $this->carregarDados();
-        foreach ($dados as $produto) {
-            if ($produto['id'] == $id) {
-                return new Produto($produto['nome'], $produto['valor']);
-            }
-        }
-        return null;
     }
 
     public function buscarPorNome($nome) {
@@ -58,14 +47,6 @@ class DAOProduto {
             }
         }
         return null;
-    }
-
-    public function remover($id) {
-        $dados = $this->carregarDados();
-        $dados = array_filter($dados, function($produto) use ($id) {
-            return $produto['id'] != $id;
-        });
-        $this->salvarDados($dados);
     }
 
     public function removerPorNome($nome) {
@@ -80,7 +61,7 @@ class DAOProduto {
         $dados = $this->carregarDados();
         $result = "";
         foreach ($dados as $produto) {
-            $result .= sprintf("Id: %d\tNome: %s\tValor: %.2f\n", $produto['id'], $produto['nome'], $produto['valor']);
+            $result .= sprintf("Nome: %s\nValor: %.2f\n\n", $produto['nome'], $produto['valor']);
         }
         return $result;
     }

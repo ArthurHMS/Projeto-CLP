@@ -22,12 +22,12 @@ class MenuProduto extends MenuEntidade {
         $this->controller->listar();
     }
 
-    protected function adicionar($scanner) {
-        $this->controller->adicionar($scanner);
+    protected function adicionar() {
+        $this->controller->adicionar();
     }
 
-    protected function remover($scanner) {
-        $this->controller->remover($scanner);
+    protected function remover() {
+        $this->controller->remover();
     }
 
     protected function mostrarOpcoes() {

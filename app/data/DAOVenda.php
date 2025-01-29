@@ -23,7 +23,7 @@ class DAOVenda {
     }
 
     private function salvarDados($dados) {
-        file_put_contents($this->filePath, json_encode($dados));
+        file_put_contents($this->filePath, json_encode($dados, JSON_PRETTY_PRINT));
     }
 
     private function carregarDados() {
@@ -34,14 +34,12 @@ class DAOVenda {
     public function adicionar($venda) {
         $dados = $this->carregarDados();
         $vendaData = [
-            'id' => $venda->getId(),
             'dataHora' => $venda->getDataHora()->format('Y-m-d H:i:s'),
             'itens' => []
         ];
 
         foreach ($venda->getItens() as $item) {
             $vendaData['itens'][] = [
-                'produto_id' => $item->getProduto()->getId(),
                 'nome' => $item->getProduto()->getNome(),
                 'qtd' => $item->getQtd(),
                 'valor' => $item->getValor()
@@ -52,16 +50,14 @@ class DAOVenda {
         $this->salvarDados($dados);
     }
 
-    public function buscar($id) {
+    public function buscar($dataHora) {
         $dados = $this->carregarDados();
         foreach ($dados as $vendaData) {
-            if ($vendaData['id'] == $id) {
+            if ($vendaData['dataHora'] == $dataHora) {
                 $venda = new Venda();
-                $venda->setId($vendaData['id']);
                 $venda->setDataHora(DateTime::createFromFormat('Y-m-d H:i:s', $vendaData['dataHora']));
                 foreach ($vendaData['itens'] as $itemData) {
                     $produto = new Produto($itemData['nome'], $itemData['valor']);
-                    $produto->setId($itemData['produto_id']);
                     $venda->adicionarItem($produto, $itemData['qtd']);
                 }
                 return $venda;
@@ -70,10 +66,10 @@ class DAOVenda {
         return null;
     }
 
-    public function remover($id) {
+    public function remover($dataHora) {
         $dados = $this->carregarDados();
-        $dados = array_filter($dados, function($vendaData) use ($id) {
-            return $vendaData['id'] != $id;
+        $dados = array_filter($dados, function($vendaData) use ($dataHora) {
+            return $vendaData['dataHora'] != $dataHora;
         });
         $this->salvarDados($dados);
     }
@@ -82,9 +78,9 @@ class DAOVenda {
         $dados = $this->carregarDados();
         $result = "";
         foreach ($dados as $vendaData) {
-            $result .= sprintf("Id: %d\tData-Hora: %s\n", $vendaData['id'], $vendaData['dataHora']);
+            $result .= sprintf("Data-Hora: %s\n", $vendaData['dataHora']);
             foreach ($vendaData['itens'] as $itemData) {
-                $result .= sprintf("  Produto: %s\tQtd: %d\tValor: %.2f\n", $itemData['nome'], $itemData['qtd'], $itemData['valor']);
+                $result .= sprintf("  Produto: %s\n  Qtd: %d\n  Valor: %.2f\n\n", $itemData['nome'], $itemData['qtd'], $itemData['valor']);
             }
             $result .= "\n";
         }

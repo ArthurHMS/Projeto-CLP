@@ -24,7 +24,7 @@ class ItemVenda {
     }
 
     public function __toString() {
-        return sprintf("%15s %8.2f x %5d = %8.2f", $this->produto->getNome(), $this->valor, $this->qtd, $this->valor * $this->qtd);
+        return sprintf("Produto: %s\nValor: %.2f\nQuantidade: %d\nSubtotal: %.2f\n", $this->produto->getNome(), $this->valor, $this->qtd, $this->valor * $this->qtd);
     }
 }
 

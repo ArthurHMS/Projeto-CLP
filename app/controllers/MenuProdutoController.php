@@ -15,78 +15,94 @@ class MenuProdutoController extends MenuEntidade {
     }
 
     public function mostrarTitulo() {
-        echo "MENU PRODUTOS\n";
+        echo "MENU PRODUTOS<br>\n";
     }
 
     public function listar() {
-        echo $this->dao->__toString();
+        echo nl2br($this->dao->__toString());
     }
 
-    public function adicionar($scanner) {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nome = isset($_POST['nome']) ? trim($_POST['nome']) : null;
-            $valor = isset($_POST['valor']) ? floatval($_POST['valor']) : null;
-
-            if ($nome == null || $nome === "" || $valor === null || $valor <= 0.0) {
-                echo "<p>Favor informar os dados corretamente.</p>";
-            } else {
-                $this->dao->adicionar(new Produto($nome, $valor));
-                echo "<p>Produto adicionado com sucesso!</p>";
-            }
-        } else {
+    public function adicionar() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['menu']) && $_POST['menu'] === 'produto' && isset($_POST['opcao']) && $_POST['opcao'] == 2 && !isset($_POST['nome']) && !isset($_POST['valor'])) {
+            // Exibe o formulário de adição de produto
             echo "<form method='POST'>";
             echo "<input type='hidden' name='menu' value='produto'>";
+            echo "<input type='hidden' name='opcao' value='2'>";
             echo "<label for='nome'>Nome: </label>";
             echo "<input type='text' name='nome' id='nome' required><br>";
             echo "<label for='valor'>Valor: </label>";
             echo "<input type='number' step='0.01' name='valor' id='valor' required><br>";
             echo "<button type='submit'>Adicionar</button>";
             echo "</form>";
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nome']) && isset($_POST['valor'])) {
+            
+            // Processa os dados do formulário de adição de produto
+            $nome = trim($_POST['nome']);
+            $valor = floatval($_POST['valor']);
+
+            if ($nome === "" || $valor <= 0.0) {
+                echo "<p>Favor informar os dados corretamente.</p>";
+            } else {
+                $this->dao->adicionar(new Produto($nome, $valor));
+                echo "<p>Produto adicionado com sucesso!</p>";
+                $this->mostrarMenu(); // Redireciona de volta ao menu de produtos
+            }
+        } else {
+            // Exibe o menu de opções
+            $this->mostrarMenu();
         }
     }
 
-    public function remover($scanner) {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nome = isset($_POST['nome']) ? trim($_POST['nome']) : null;
-
-            if ($nome == null || $nome === "") {
-                echo "<p>Favor informar o nome corretamente.</p>";
-            } else {
-                $this->dao->removerPorNome($nome);
-                echo "<p>Produto removido com sucesso!</p>";
-            }
-        } else {
+    public function remover() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['menu']) && $_POST['menu'] === 'produto' && isset($_POST['opcao']) && $_POST['opcao'] == 3 && !isset($_POST['nome'])) {
+            // Exibe o formulário de remoção de produto
             echo "<form method='POST'>";
             echo "<input type='hidden' name='menu' value='produto'>";
+            echo "<input type='hidden' name='opcao' value='3'>";
             echo "<label for='nome'>Nome: </label>";
             echo "<input type='text' name='nome' id='nome' required><br>";
             echo "<button type='submit'>Remover</button>";
             echo "</form>";
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nome'])) {
+            // Processa os dados do formulário de remoção de produto
+            $nome = trim($_POST['nome']);
+
+            if ($nome === "") {
+                echo "<p>Favor informar o nome corretamente.</p>";
+            } else {
+                $this->dao->removerPorNome($nome);
+                echo "<p>Produto removido com sucesso!</p>";
+                $this->mostrarMenu(); // Redireciona de volta ao menu de produtos
+            }
+        } else {
+            // Exibe o menu de opções
+            $this->mostrarMenu();
         }
     }
 
-    protected function executarOpcao($opcao) {
+    public function executarOpcao($opcao) {
         switch ($opcao) {
             case 0:
-                return 0;
+                // Voltar ao menu principal
+                $menuPrincipal = new MenuPrincipal();
+                $menuPrincipal->mostrarMenu();
+                break;
 
             case 1:
                 $this->listar();
                 break;
 
             case 2:
-                $this->adicionar(null);
+                $this->adicionar();
                 break;
 
             case 3:
-                $this->remover(null);
+                $this->remover();
                 break;
 
             default:
                 echo "OPCAO INVALIDA\n";
         }
-
-        return 1;
     }
 
     public function mostrarOpcoes() {

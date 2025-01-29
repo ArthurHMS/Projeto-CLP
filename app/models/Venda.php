@@ -1,17 +1,14 @@
 <?php
 
-require_once 'Entidade.php';
 require_once 'Totalizavel.php';
 require_once 'Produto.php';
 require_once 'ItemVenda.php';
 
-class Venda extends Entidade implements Totalizavel {
-    protected $id;
+class Venda implements Totalizavel {
     private $dataHora;
     private $itens;
 
     public function __construct() {
-        parent::__construct();
         $this->dataHora = new DateTime();
         $this->itens = [];
     }
@@ -46,13 +43,13 @@ class Venda extends Entidade implements Totalizavel {
     }
 
     public function __toString() {
-        $sb = sprintf("%sData-Hora: %s\nItens:\n", parent::__toString(), $this->dataHora->format('Y-m-d H:i:s'));
+        $sb = sprintf("Data-Hora: %s\nItens:\n", $this->dataHora->format('Y-m-d H:i:s'));
 
         foreach ($this->itens as $item) {
-            $sb .= "\n  " . $item->__toString();
+            $sb .= "\n  " . $item->__toString() . "\n";
         }
 
-        $sb .= "\nTOTAL: " . $this->total();
+        $sb .= "\nTOTAL: " . $this->total() . "\n";
 
         return $sb;
     }
@@ -65,10 +62,6 @@ class Venda extends Entidade implements Totalizavel {
         }
 
         return $t;
-    }
-
-    public function setId($id) {
-        $this->id = $id;
     }
 }
 

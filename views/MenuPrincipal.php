@@ -43,7 +43,7 @@ class MenuPrincipal extends MenuAbstrato {
     }
 
     protected function mostrarTitulo() {
-        echo "<h1>MENU PRINCIPAL</h1>";
+        echo "<h1>MENU PRINCIPAL</h1><br>";
     }
 
     protected function getMenuName() {

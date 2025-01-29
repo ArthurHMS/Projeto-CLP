@@ -6,9 +6,9 @@ abstract class MenuEntidade extends MenuAbstrato {
 
     protected abstract function listar();
 
-    protected abstract function adicionar($scanner);
+    protected abstract function adicionar();
 
-    protected abstract function remover($scanner);
+    protected abstract function remover();
 
     protected function executarOpcao($opcao) {
         switch ($opcao) {
@@ -20,11 +20,11 @@ abstract class MenuEntidade extends MenuAbstrato {
                 break;
 
             case 2:
-                $this->adicionar(null);
+                $this->adicionar();
                 break;
 
             case 3:
-                $this->remover(null);
+                $this->remover();
                 break;
 
             default:
