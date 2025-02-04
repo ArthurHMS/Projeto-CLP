@@ -54,23 +54,23 @@ class MenuProdutoController extends MenuEntidade {
     }
 
     public function remover() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['menu']) && $_POST['menu'] === 'produto' && isset($_POST['opcao']) && $_POST['opcao'] == 3 && !isset($_POST['nome'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['menu']) && $_POST['menu'] === 'produto' && isset($_POST['opcao']) && $_POST['opcao'] == 3 && !isset($_POST['id'])) {
             // Exibe o formulário de remoção de produto
             echo "<form method='POST'>";
             echo "<input type='hidden' name='menu' value='produto'>";
             echo "<input type='hidden' name='opcao' value='3'>";
-            echo "<label for='nome'>Nome: </label>";
-            echo "<input type='text' name='nome' id='nome' required><br>";
+            echo "<label for='id'>ID: </label>";
+            echo "<input type='text' name='id' id='id' required><br>";
             echo "<button type='submit'>Remover</button>";
             echo "</form>";
-        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nome'])) {
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
             // Processa os dados do formulário de remoção de produto
-            $nome = trim($_POST['nome']);
+            $id = trim($_POST['id']);
 
-            if ($nome === "") {
-                echo "<p>Favor informar o nome corretamente.</p>";
+            if ($id === "") {
+                echo "<p>Favor informar o ID corretamente.</p>";
             } else {
-                $this->dao->removerPorNome($nome);
+                $this->dao->removerPorId($id);
                 echo "<p>Produto removido com sucesso!</p>";
                 $this->mostrarMenu(); // Redireciona de volta ao menu de produtos
             }

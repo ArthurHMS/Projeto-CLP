@@ -33,26 +33,27 @@ class DAOProduto {
     public function adicionar($produto) {
         $dados = $this->carregarDados();
         $dados[] = [
+            'id' => $produto->getId(),
             'nome' => $produto->getNome(),
             'valor' => $produto->getValor()
         ];
         $this->salvarDados($dados);
     }
 
-    public function buscarPorNome($nome) {
+    public function buscarPorId($id) {
         $dados = $this->carregarDados();
         foreach ($dados as $produto) {
-            if ($produto['nome'] == $nome) {
+            if ($produto['id'] == $id) {
                 return new Produto($produto['nome'], $produto['valor']);
             }
         }
         return null;
     }
 
-    public function removerPorNome($nome) {
+    public function removerPorId($id) {
         $dados = $this->carregarDados();
-        $dados = array_filter($dados, function($produto) use ($nome) {
-            return $produto['nome'] != $nome;
+        $dados = array_filter($dados, function($produto) use ($id) {
+            return $produto['id'] != $id;
         });
         $this->salvarDados($dados);
     }
@@ -61,7 +62,7 @@ class DAOProduto {
         $dados = $this->carregarDados();
         $result = "";
         foreach ($dados as $produto) {
-            $result .= sprintf("Nome: %s\nValor: %.2f\n\n", $produto['nome'], $produto['valor']);
+            $result .= sprintf("Id: %d\nNome: %s\nValor: %.2f\n\n", $produto['id'], $produto['nome'], $produto['valor']);
         }
         return $result;
     }

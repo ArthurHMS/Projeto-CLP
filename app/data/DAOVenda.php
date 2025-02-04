@@ -34,12 +34,14 @@ class DAOVenda {
     public function adicionar($venda) {
         $dados = $this->carregarDados();
         $vendaData = [
+            'id' => $venda->getId(),
             'dataHora' => $venda->getDataHora()->format('Y-m-d H:i:s'),
             'itens' => []
         ];
 
         foreach ($venda->getItens() as $item) {
             $vendaData['itens'][] = [
+                'id' => $item->getProduto()->getId(),
                 'nome' => $item->getProduto()->getNome(),
                 'qtd' => $item->getQtd(),
                 'valor' => $item->getValor()
@@ -50,10 +52,10 @@ class DAOVenda {
         $this->salvarDados($dados);
     }
 
-    public function buscar($dataHora) {
+    public function buscarPorId($id) {
         $dados = $this->carregarDados();
         foreach ($dados as $vendaData) {
-            if ($vendaData['dataHora'] == $dataHora) {
+            if ($vendaData['id'] == $id) {
                 $venda = new Venda();
                 $venda->setDataHora(DateTime::createFromFormat('Y-m-d H:i:s', $vendaData['dataHora']));
                 foreach ($vendaData['itens'] as $itemData) {
@@ -66,10 +68,10 @@ class DAOVenda {
         return null;
     }
 
-    public function remover($dataHora) {
+    public function removerPorId($id) {
         $dados = $this->carregarDados();
-        $dados = array_filter($dados, function($vendaData) use ($dataHora) {
-            return $vendaData['dataHora'] != $dataHora;
+        $dados = array_filter($dados, function($vendaData) use ($id) {
+            return $vendaData['id'] != $id;
         });
         $this->salvarDados($dados);
     }
@@ -78,7 +80,7 @@ class DAOVenda {
         $dados = $this->carregarDados();
         $result = "";
         foreach ($dados as $vendaData) {
-            $result .= sprintf("Data-Hora: %s\n", $vendaData['dataHora']);
+            $result .= sprintf("Id: %d\nData-Hora: %s\n", $vendaData['id'], $vendaData['dataHora']);
             foreach ($vendaData['itens'] as $itemData) {
                 $result .= sprintf("  Produto: %s\n  Qtd: %d\n  Valor: %.2f\n\n", $itemData['nome'], $itemData['qtd'], $itemData['valor']);
             }

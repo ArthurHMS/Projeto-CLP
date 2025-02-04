@@ -27,23 +27,22 @@ class MenuVendaController {
     }
 
     public function adicionar() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['menu']) && $_POST['menu'] === 'venda' && isset($_POST['opcao']) && $_POST['opcao'] == 2 && !isset($_POST['produtoNome']) && !isset($_POST['qtd'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['menu']) && $_POST['menu'] === 'venda' && isset($_POST['opcao']) && $_POST['opcao'] == 2 && !isset($_POST['produtoId']) && !isset($_POST['qtd'])) {
             // Exibe o formulário de adição de venda
             echo "<form method='POST'>";
             echo "<input type='hidden' name='menu' value='venda'>";
             echo "<input type='hidden' name='opcao' value='2'>";
-            echo "<label for='produtoNome'>Nome do Produto: </label>";
-            echo "<input type='text' name='produtoNome' id='produtoNome' required><br>";
+            echo "<label for='produtoId'>ID do Produto: </label>";
+            echo "<input type='text' name='produtoId' id='produtoId' required><br>";
             echo "<label for='qtd'>Quantidade: </label>";
             echo "<input type='number' name='qtd' id='qtd' required><br>";
             echo "<button type='submit'>Adicionar</button>";
             echo "</form>";
-        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['produtoNome']) && isset($_POST['qtd'])) {
-            
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['produtoId']) && isset($_POST['qtd'])) {
             // Processa os dados do formulário de adição de venda
-            $produtoNome = trim($_POST['produtoNome']);
+            $produtoId = trim($_POST['produtoId']);
             $qtd = intval($_POST['qtd']);
-            $produto = $this->daoProduto->buscarPorNome($produtoNome);
+            $produto = $this->daoProduto->buscarPorId($produtoId);
 
             if ($produto == null || $qtd <= 0) {
                 echo "<p>Favor informar os dados corretamente.</p>";
@@ -61,23 +60,23 @@ class MenuVendaController {
     }
 
     public function remover() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['menu']) && $_POST['menu'] === 'venda' && isset($_POST['opcao']) && $_POST['opcao'] == 3 && !isset($_POST['dataHora'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['menu']) && $_POST['menu'] === 'venda' && isset($_POST['opcao']) && $_POST['opcao'] == 3 && !isset($_POST['id'])) {
             // Exibe o formulário de remoção de venda
             echo "<form method='POST'>";
             echo "<input type='hidden' name='menu' value='venda'>";
             echo "<input type='hidden' name='opcao' value='3'>";
-            echo "<label for='dataHora'>Data e Hora: </label>";
-            echo "<input type='text' name='dataHora' id='dataHora' required><br>";
+            echo "<label for='id'>ID: </label>";
+            echo "<input type='text' name='id' id='id' required><br>";
             echo "<button type='submit'>Remover</button>";
             echo "</form>";
-        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['dataHora'])) {
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
             // Processa os dados do formulário de remoção de venda
-            $dataHora = trim($_POST['dataHora']);
+            $id = trim($_POST['id']);
 
-            if ($dataHora === "") {
-                echo "<p>Favor informar a data e hora corretamente.</p>";
+            if ($id === "") {
+                echo "<p>Favor informar o ID corretamente.</p>";
             } else {
-                $this->daoVenda->remover($dataHora);
+                $this->daoVenda->removerPorId($id);
                 echo "<p>Venda removida com sucesso!</p>";
                 $this->mostrarMenu(); // Redireciona de volta ao menu de vendas
             }

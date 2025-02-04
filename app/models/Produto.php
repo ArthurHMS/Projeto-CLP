@@ -1,10 +1,13 @@
 <?php
 
-class Produto {
+require_once 'Entidade.php';
+
+class Produto extends Entidade {
     private $nome;
     private $valor;
 
     public function __construct($nome = "", $valor = 0.0) {
+        parent::__construct();
         $this->nome = $nome;
         $this->valor = $valor;
     }
@@ -30,7 +33,7 @@ class Produto {
     }
 
     public function __toString() {
-        return sprintf("Nome: %s\nValor: %.2f\n", $this->nome, $this->valor);
+        return sprintf("Id: %d\nNome: %s\nValor: %.2f\n", $this->id, $this->nome, $this->valor);
     }
 }
 
